@@ -1,17 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { Clock3, LockKeyhole } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { api, formatApiError } from "../api";
 import { difficultyLabel, formatLimit } from "../format";
-import type { ProblemSummary } from "../types";
+import type { ProblemSummary, Tag } from "../types";
 import { usePageTitle } from "../usePageTitle";
 
 export function ProblemListPage() {
   usePageTitle("Problems");
+  const [tag, setTag] = useState("");
+  const tags = useQuery({
+    queryKey: ["tags"],
+    queryFn: async () => (await api.get<Tag[]>("/api/tags/")).data,
+  });
   const problems = useQuery({
-    queryKey: ["problems"],
-    queryFn: async () => (await api.get<ProblemSummary[]>("/api/problems/")).data,
+    queryKey: ["problems", tag],
+    queryFn: async () =>
+      (await api.get<ProblemSummary[]>("/api/problems/", { params: tag ? { tag } : {} })).data,
   });
 
   return (
@@ -24,10 +32,27 @@ export function ProblemListPage() {
           here. Hidden cases stay on the server and are used when you run a solution.
         </p>
       </header>
+      <div className="tag-filter" role="group" aria-label="Filter by tag">
+        <button type="button" className={clsx("tag", tag === "" && "is-selected")} onClick={() => setTag("")}>
+          All topics
+        </button>
+        {tags.data?.map((item) => (
+          <button
+            key={item.slug}
+            type="button"
+            className={clsx("tag", tag === item.slug && "is-selected")}
+            onClick={() => setTag(item.slug)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
       {problems.isLoading ? <p className="status">Loading problems.</p> : null}
       {problems.isError ? <p className="status is-error">{formatApiError(problems.error)}</p> : null}
       {problems.data && problems.data.length === 0 ? (
-        <p className="status">No problems are loaded. Run migrations on the backend.</p>
+        <p className="status">
+          {tag ? "No problems carry that tag." : "No problems are loaded. Run migrations on the backend."}
+        </p>
       ) : null}
       <div className="problem-list">
         {problems.data?.map((problem) => (

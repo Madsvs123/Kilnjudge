@@ -216,6 +216,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .difficulty-medium { color: var(--tle); }
 .difficulty-hard { color: var(--wa); }
 
+.tag-filter { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 1rem; }
+button.tag { background: transparent; cursor: pointer; padding: 0.2rem 0.7rem; }
+.tag.is-selected { border-color: var(--ember); color: var(--foam); background: #3a241c; }
+
 .tag-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.65rem; }
 
 .tag {
