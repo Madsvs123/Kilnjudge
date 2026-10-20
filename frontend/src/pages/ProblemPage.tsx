@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock3, LockKeyhole, Play } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 import { z } from "zod";
@@ -26,6 +27,45 @@ const STARTER = `def main() -> None:
 if __name__ == "__main__":
     main()
 `;
+
+function EditorialNotes({ slug, initial }: { slug: string; initial: string }) {
+  const queryClient = useQueryClient();
+  const [notes, setNotes] = useState(initial);
+  const save = useMutation({
+    mutationFn: async (body: string) =>
+      (await api.put(`/api/problems/${slug}/editorial/`, { notes: body })).data,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["problem", slug] });
+    },
+  });
+
+  useEffect(() => {
+    setNotes(initial);
+  }, [initial]);
+
+  return (
+    <section>
+      <h2>Editorial notes</h2>
+      <p className="hint">Notes you write for yourself after you understand the exercise.</p>
+      <textarea
+        className="notes-box"
+        value={notes}
+        spellCheck
+        onChange={(event) => setNotes(event.target.value)}
+        aria-label="Editorial notes"
+      />
+      {save.isError ? <p className="form-error">{formatApiError(save.error)}</p> : null}
+      <button
+        type="button"
+        className="primary"
+        disabled={save.isPending}
+        onClick={() => save.mutate(notes)}
+      >
+        {save.isPending ? "Saving…" : "Save notes"}
+      </button>
+    </section>
+  );
+}
 
 function Paragraphs({ text }: { text: string }) {
   return (
@@ -128,6 +168,7 @@ export function ProblemPage() {
             <h2>Output</h2>
             <Paragraphs text={detail.output_format} />
           </section>
+          <EditorialNotes slug={detail.slug} initial={detail.editorial?.notes ?? ""} />
           {detail.hints.length > 0 ? (
             <section>
               <h2>Hints</h2>

@@ -27,6 +27,11 @@ export type Hint = {
   body: string;
 };
 
+export type Editorial = {
+  notes: string;
+  updated_at: string;
+};
+
 export type ProblemDetail = {
   slug: string;
   title: string;
@@ -40,6 +45,7 @@ export type ProblemDetail = {
   time_limit_ms: number;
   hidden_count: number;
   hints: Hint[];
+  editorial: Editorial | null;
   samples: Sample[];
 };
 

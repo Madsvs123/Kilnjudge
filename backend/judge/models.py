@@ -78,6 +78,15 @@ class Hint(models.Model):
         return f"{self.problem.slug} hint {self.position}"
 
 
+class Editorial(models.Model):
+    problem = models.OneToOneField(Problem, related_name="editorial", on_delete=models.CASCADE)
+    notes = models.TextField(blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.problem.slug} editorial"
+
+
 class Submission(models.Model):
     VERDICT_ACCEPTED = "accepted"
     VERDICT_WRONG = "wrong_answer"

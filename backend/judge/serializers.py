@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
-from .models import Hint, Problem, ProblemTest, Submission, Tag
+from .models import Editorial, Hint, Problem, ProblemTest, Submission, Tag
 
 User = get_user_model()
 
@@ -75,6 +76,7 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     hidden_count = serializers.IntegerField(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     hints = HintSerializer(many=True, read_only=True)
+    editorial = serializers.SerializerMethodField()
 
     class Meta:
         model = Problem
@@ -91,12 +93,24 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
             "time_limit_ms",
             "hidden_count",
             "hints",
+            "editorial",
             "samples",
         )
+
+    def get_editorial(self, problem: Problem):
+        try:
+            editorial = problem.editorial
+        except ObjectDoesNotExist:
+            return None
+        return {"notes": editorial.notes, "updated_at": editorial.updated_at}
 
     def get_samples(self, problem: Problem):
         samples = problem.tests.filter(is_sample=True)
         return SampleTestSerializer(samples, many=True).data
+
+
+class EditorialWriteSerializer(serializers.Serializer):
+    notes = serializers.CharField(allow_blank=True, max_length=8000, trim_whitespace=False)
 
 
 class SubmitSerializer(serializers.Serializer):

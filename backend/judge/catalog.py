@@ -32,6 +32,11 @@ PROBLEMS = [
             "Skip the first reading and the last reading. A valley needs a neighbor on both sides.",
             "If either neighbor is less than or equal to the reading, that reading is not a valley.",
         ],
+        "editorial": (
+            "Walk from the second reading through the second-to-last. Count a reading only when "
+            "it is strictly colder than both neighbors. The end readings have only one neighbor, "
+            "so they stay out of the count."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "5\n3 1 4 2 5\n", "expected_output": "2\n"},
             {"position": 2, "is_sample": True, "input_data": "3\n1 2 3\n", "expected_output": "0\n"},
@@ -67,6 +72,11 @@ PROBLEMS = [
             "Stop when the current value has one digit. Reaching that digit is not an extra step.",
             "Each replacement looks only at the decimal digits of the current value.",
         ],
+        "editorial": (
+            "Keep replacing the number while it is at least 10. Each replacement is the sum of "
+            "the squares of its decimal digits, and each replacement counts as one step. A value "
+            "that is already below 10 contributes zero steps."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "5\n", "expected_output": "0\n"},
             {"position": 2, "is_sample": True, "input_data": "25\n", "expected_output": "7\n"},
@@ -105,6 +115,11 @@ PROBLEMS = [
             "A positive even distance means the two indexes are different and have the same parity.",
             "Count each letter on even indexes separately from the same letter on odd indexes.",
         ],
+        "editorial": (
+            "Indexes an even distance apart share a parity. For each letter, count occurrences "
+            "on even indexes and occurrences on odd indexes. A group of k matching indexes "
+            "contributes one twin for every way to choose two of them."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "aba\n", "expected_output": "1\n"},
             {"position": 2, "is_sample": True, "input_data": "aaaa\n", "expected_output": "2\n"},
@@ -144,6 +159,12 @@ PROBLEMS = [
             "Collapse adjacent equal values into one block before you look for an increase.",
             "The answer counts original elements. A long flat block can outweigh several short rises.",
         ],
+        "editorial": (
+            "First compress the array into blocks of equal values, keeping each block's length. "
+            "Then scan the blocks from left to right. Extend the current cover while the block "
+            "values strictly increase, and restart the cover when they do not. Remember the "
+            "largest cover, measured in original elements."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "8\n1 1 2 2 2 1 3 3\n", "expected_output": "5\n"},
             {"position": 2, "is_sample": True, "input_data": "4\n5 4 3 2\n", "expected_output": "1\n"},
@@ -183,6 +204,10 @@ PROBLEMS = [
             "Compare a tile with the tile two places to its right, not with its immediate neighbor.",
             "The last two tiles have nothing two places further along, so they do not open a gap.",
         ],
+        "editorial": (
+            "Look at indexes 0 through n - 3. A gap exists at i when the height at i is strictly "
+            "greater than the height at i + 2. The immediate neighbor is not part of the comparison."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "5\n5 3 4 1 2\n", "expected_output": "3\n"},
             {"position": 2, "is_sample": True, "input_data": "4\n1 2 3 4\n", "expected_output": "0\n"},
@@ -218,6 +243,11 @@ PROBLEMS = [
             "Close a run when the letter changes, and close the final run at the end of the string.",
             "Square each run length on its own, then add those squares.",
         ],
+        "editorial": (
+            "Scan the string once and keep the length of the current run. When the letter changes, "
+            "add the square of that length to the total and start a new run. After the scan, add "
+            "the square of the final run as well."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "aabccc\n", "expected_output": "14\n"},
             {"position": 2, "is_sample": True, "input_data": "abcd\n", "expected_output": "4\n"},
@@ -255,6 +285,11 @@ PROBLEMS = [
             "A pair uses two different positions. Swapping those positions does not make a new pair.",
             "You only need to know whether a sum is a multiple of 3.",
         ],
+        "editorial": (
+            "Group the temperatures by remainder modulo 3. Two remainder-0 values form a valid "
+            "pair, and every remainder-1 value forms a valid pair with every remainder-2 value. "
+            "Two values that share remainder 1, or that share remainder 2, do not."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "4\n1 2 3 4\n", "expected_output": "2\n"},
             {"position": 2, "is_sample": True, "input_data": "1\n3\n", "expected_output": "0\n"},
@@ -292,6 +327,11 @@ PROBLEMS = [
             "A window of odd length cannot hold the same count of each letter.",
             "Count every contiguous block, including blocks that sit strictly inside the stamp.",
         ],
+        "editorial": (
+            "Odd-length windows cannot balance. For each start index, grow the window to the right "
+            "and keep a count of a and a count of b. Whenever those counts match, the window is "
+            "one answer. The length bound of 200 keeps this double scan inside the time limit."
+        ),
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "ab\n", "expected_output": "1\n"},
             {"position": 2, "is_sample": True, "input_data": "aabb\n", "expected_output": "2\n"},

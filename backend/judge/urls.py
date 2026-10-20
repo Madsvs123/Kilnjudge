@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .views import (
+    EditorialView,
     MeView,
     ProblemDetailView,
     ProblemListView,
@@ -19,6 +20,7 @@ urlpatterns = [
     path("problems/", ProblemListView.as_view(), name="problem-list"),
     path("problems/<slug:slug>/", ProblemDetailView.as_view(), name="problem-detail"),
     path("problems/<slug:slug>/submit/", SubmitView.as_view(), name="submit"),
+    path("problems/<slug:slug>/editorial/", EditorialView.as_view(), name="editorial"),
     path("submissions/", SubmissionListView.as_view(), name="submission-list"),
     path("submissions/<int:pk>/", SubmissionDetailView.as_view(), name="submission-detail"),
 ]

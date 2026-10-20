@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Hint, Problem, ProblemTest, Submission, Tag
+from .models import Editorial, Hint, Problem, ProblemTest, Submission, Tag
 
 
 @admin.register(Tag)
@@ -17,6 +17,13 @@ class ProblemAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
     ordering = ("position",)
+
+
+@admin.register(Editorial)
+class EditorialAdmin(admin.ModelAdmin):
+    list_display = ("problem", "updated_at")
+    search_fields = ("problem__slug", "notes")
+    readonly_fields = ("updated_at",)
 
 
 @admin.register(Hint)

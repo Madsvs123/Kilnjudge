@@ -4,9 +4,10 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Problem, Submission
+from .models import Editorial, Problem, Submission
 from .runner import run_source
 from .serializers import (
+    EditorialWriteSerializer,
     ProblemDetailSerializer,
     ProblemListSerializer,
     RegisterSerializer,
@@ -26,7 +27,7 @@ class MeView(APIView):
 
 
 def _annotated_problems():
-    return Problem.objects.prefetch_related("tags", "hints").annotate(
+    return Problem.objects.prefetch_related("tags", "hints", "editorial").annotate(
         sample_count=Count("tests", filter=Q(tests__is_sample=True)),
         hidden_count=Count("tests", filter=Q(tests__is_sample=False)),
     )
@@ -45,6 +46,18 @@ class ProblemDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return _annotated_problems()
+
+
+class EditorialView(APIView):
+    def put(self, request, slug):
+        problem = get_object_or_404(Problem, slug=slug)
+        incoming = EditorialWriteSerializer(data=request.data)
+        incoming.is_valid(raise_exception=True)
+        editorial, _created = Editorial.objects.update_or_create(
+            problem=problem,
+            defaults={"notes": incoming.validated_data["notes"]},
+        )
+        return Response({"notes": editorial.notes, "updated_at": editorial.updated_at})
 
 
 class SubmitView(APIView):
