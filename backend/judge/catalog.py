@@ -11,7 +11,7 @@ PROBLEMS = [
         "difficulty": "intro",
         "tags": ["arrays", "counting"],
         "summary": "Count readings that are strictly colder than both neighbors.",
-        "time_limit_ms": 2000,
+        "time_limit_ms": 1000,
         "statement": (
             "A firing curve is a sequence of integer temperature readings. "
             "An interior valley is any reading, other than the first or the last, "
@@ -54,7 +54,7 @@ PROBLEMS = [
         "difficulty": "intro",
         "tags": ["math", "digits"],
         "summary": "Count replacements by the sum of squared decimal digits until one digit remains.",
-        "time_limit_ms": 2000,
+        "time_limit_ms": 1500,
         "statement": (
             "Start with a non-negative integer. While the number still has two or more digits, "
             "replace it with the sum of the squares of its decimal digits. Count how many "
@@ -94,7 +94,7 @@ PROBLEMS = [
         "difficulty": "medium",
         "tags": ["strings", "counting"],
         "summary": "Count matching letters whose indexes are a positive even distance apart.",
-        "time_limit_ms": 2000,
+        "time_limit_ms": 1800,
         "statement": (
             "A kiln stamp is one line of lowercase English letters. Two indexes form an "
             "even-gap twin when they carry the same letter, the left index is strictly smaller, "
@@ -137,7 +137,7 @@ PROBLEMS = [
         "difficulty": "medium",
         "tags": ["arrays", "ranges"],
         "summary": "Find the longest stretch of strictly rising equal-value blocks.",
-        "time_limit_ms": 2000,
+        "time_limit_ms": 2500,
         "statement": (
             "Group the array into plateaus. A plateau is a maximal contiguous block of equal values.\n\n"
             "Read the plateaus from left to right. A rising run is a contiguous sequence of these "

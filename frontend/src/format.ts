@@ -8,9 +8,7 @@ export const VERDICT_LABEL: Record<Verdict, string> = {
 };
 
 export function formatLimit(milliseconds: number): string {
-  const seconds = milliseconds / 1000;
-  const digits = seconds < 10 ? 1 : 0;
-  return `${seconds.toFixed(digits)} s wall clock per test`;
+  return `${milliseconds} ms per test on this problem`;
 }
 
 export function formatRuntime(milliseconds: number): string {

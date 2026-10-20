@@ -96,6 +96,17 @@ class SolutionVerdictTests(APITestCase):
         self.assertEqual(other_history.data, [])
         self.assertEqual(stolen.status_code, 404)
 
+    def test_problem_time_limit_stops_a_slow_solution(self):
+        self.problem.time_limit_ms = 400
+        self.problem.save(update_fields=["time_limit_ms"])
+        source = "while True:\n    pass\n"
+
+        response = self.client.post(self.submit_url, {"source_code": source}, format="json")
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["verdict"], Submission.VERDICT_TIME_LIMIT)
+        self.assertIn("400", response.data["message"])
+
     def test_network_socket_is_rejected(self):
         source = "import socket\nsocket.socket()\n"
         response = self.client.post(self.submit_url, {"source_code": source}, format="json")

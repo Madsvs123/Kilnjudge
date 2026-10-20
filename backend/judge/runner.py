@@ -85,7 +85,7 @@ def run_source(source_code: str, tests, time_limit_ms: int) -> dict:
                 return _outcome(
                     "time_limit",
                     total_ms,
-                    f"Time limit exceeded on {label}.",
+                    f"Time limit of {int(time_limit_ms)} ms for this problem was exceeded on {label}.",
                 )
             except OSError:
                 return _outcome(
