@@ -20,8 +20,8 @@ export function ProblemListPage() {
         <p className="eyebrow">Practice log</p>
         <h1>Your exercises</h1>
         <p>
-          Four original string, array, and math problems. Sample cases are printed here. Hidden
-          cases stay on the server and are used when you run a solution.
+          Original string, array, and math problems, tagged by topic. Sample cases are printed
+          here. Hidden cases stay on the server and are used when you run a solution.
         </p>
       </header>
       {problems.isLoading ? <p className="status">Loading problems.</p> : null}

@@ -237,6 +237,39 @@ PROBLEMS = [
             {"position": 7, "is_sample": False, "input_data": "2\n4 5\n", "expected_output": "1\n"},
         ],
     },
+    {
+        "slug": "balanced-stamp-windows",
+        "title": "Balanced Stamp Windows",
+        "position": 8,
+        "difficulty": "hard",
+        "tags": ["strings", "ranges"],
+        "summary": "Count contiguous windows that contain the same number of a and b.",
+        "time_limit_ms": 2500,
+        "statement": (
+            "A kiln stamp is a string made only of the letters a and b. A window is any "
+            "contiguous block of the stamp, including a block of one letter and the whole "
+            "stamp. A window is balanced when it contains the same number of a letters as "
+            "b letters. Count the balanced windows.\n\n"
+            "The stamp ab has one balanced window, the whole stamp. The stamp aabb has the "
+            "window ab in the middle and the whole stamp, so the answer is 2. The stamp abba "
+            "has ab, ba, and the whole stamp, so the answer is 3. A window of odd length "
+            "cannot be balanced."
+        ),
+        "input_format": (
+            "One line holding the stamp s.\n"
+            "1 <= length of s <= 200. Every character is a or b."
+        ),
+        "output_format": "Print a single integer, the number of balanced windows.",
+        "tests": [
+            {"position": 1, "is_sample": True, "input_data": "ab\n", "expected_output": "1\n"},
+            {"position": 2, "is_sample": True, "input_data": "aabb\n", "expected_output": "2\n"},
+            {"position": 3, "is_sample": True, "input_data": "abba\n", "expected_output": "3\n"},
+            {"position": 4, "is_sample": False, "input_data": "a\n", "expected_output": "0\n"},
+            {"position": 5, "is_sample": False, "input_data": "aa\n", "expected_output": "0\n"},
+            {"position": 6, "is_sample": False, "input_data": "abab\n", "expected_output": "4\n"},
+            {"position": 7, "is_sample": False, "input_data": "bbb\n", "expected_output": "0\n"},
+        ],
+    },
 ]
 
 
