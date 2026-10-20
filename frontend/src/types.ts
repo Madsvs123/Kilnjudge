@@ -49,6 +49,13 @@ export type ProblemDetail = {
   samples: Sample[];
 };
 
+export type SampleOutcome = {
+  verdict: Verdict;
+  runtime_ms: number;
+  message: string;
+  stored: boolean;
+};
+
 export type Submission = {
   id: number;
   problem_slug: string;

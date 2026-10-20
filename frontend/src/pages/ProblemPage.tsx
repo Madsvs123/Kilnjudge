@@ -9,7 +9,7 @@ import { z } from "zod";
 import { api, formatApiError } from "../api";
 import { VerdictBadge } from "../components/VerdictBadge";
 import { difficultyLabel, formatLimit, formatRuntime, formatWhen, VERDICT_DETAIL } from "../format";
-import type { ProblemDetail, Submission } from "../types";
+import type { ProblemDetail, SampleOutcome, Submission } from "../types";
 import { usePageTitle } from "../usePageTitle";
 
 const schema = z.object({
@@ -102,6 +102,10 @@ export function ProblemPage() {
       await queryClient.invalidateQueries({ queryKey: ["submissions"] });
     },
   });
+  const sampleRun = useMutation({
+    mutationFn: async (sourceCode: string) =>
+      (await api.post<SampleOutcome>(`/api/problems/${slug}/samples/`, { source_code: sourceCode })).data,
+  });
 
   usePageTitle(problem.data?.title ?? "Problem");
 
@@ -134,6 +138,8 @@ export function ProblemPage() {
 
   const detail = problem.data;
   const result = submit.data;
+  const sampleResult = sampleRun.data;
+  const busy = submit.isPending || sampleRun.isPending;
 
   return (
     <main className="page">
@@ -226,6 +232,14 @@ export function ProblemPage() {
               Insert starter
             </button>
           </div>
+          {sampleResult ? (
+            <div className={`result-banner verdict-${sampleResult.verdict}`}>
+              <VerdictBadge verdict={sampleResult.verdict} />
+              <p>Sample check only. Hidden tests were not run, and this attempt was not stored.</p>
+              <p>{sampleResult.message}</p>
+              <p className="runtime">{formatRuntime(sampleResult.runtime_ms)}</p>
+            </div>
+          ) : null}
           {result ? (
             <div className={`result-banner verdict-${result.verdict}`}>
               <VerdictBadge verdict={result.verdict} />
@@ -235,7 +249,8 @@ export function ProblemPage() {
               <Link to={`/submissions/${result.id}`}>Open this run</Link>
             </div>
           ) : null}
-          {submit.isError ? <p className="form-error">{formatApiError(submit.error)}</p> : null}
+            {sampleRun.isError ? <p className="form-error">{formatApiError(sampleRun.error)}</p> : null}
+            {submit.isError ? <p className="form-error">{formatApiError(submit.error)}</p> : null}
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <label className="sr-only" htmlFor="source_code">
               Python solution
@@ -255,11 +270,24 @@ export function ProblemPage() {
             {form.formState.errors.source_code?.message ? (
               <p className="form-error">{form.formState.errors.source_code.message}</p>
             ) : null}
-            <button type="submit" className="primary" disabled={submit.isPending}>
+            <button type="submit" className="primary" disabled={busy}>
               <Play size={16} aria-hidden="true" />
-              {submit.isPending ? "Running…" : "Run solution"}
+              {submit.isPending ? "Submitting…" : "Submit solution"}
             </button>
-            <p className="hint">Ctrl+Enter runs the solution. Each test stops at the wall-clock limit.</p>
+            <button
+              type="button"
+              className="ghost wide"
+              disabled={busy}
+              onClick={() => {
+                void form.handleSubmit((values) => sampleRun.mutate(values.source_code))();
+              }}
+            >
+              {sampleRun.isPending ? "Checking samples…" : "Check samples"}
+            </button>
+            <p className="hint">
+              Check samples before an official submit. Ctrl+Enter submits. Each test stops at this
+              problem's wall-clock limit.
+            </p>
           </form>
         </aside>
       </div>

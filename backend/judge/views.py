@@ -60,6 +60,21 @@ class EditorialView(APIView):
         return Response({"notes": editorial.notes, "updated_at": editorial.updated_at})
 
 
+class SampleRunView(APIView):
+    def post(self, request, slug):
+        problem = get_object_or_404(Problem, slug=slug)
+        incoming = SubmitSerializer(data=request.data)
+        incoming.is_valid(raise_exception=True)
+        outcome = run_source(
+            incoming.validated_data["source_code"],
+            problem.tests.filter(is_sample=True),
+            problem.time_limit_ms,
+            samples_only=True,
+        )
+        outcome["stored"] = False
+        return Response(outcome)
+
+
 class SubmitView(APIView):
     def post(self, request, slug):
         problem = get_object_or_404(Problem, slug=slug)

@@ -62,6 +62,19 @@ class SolutionVerdictTests(APITestCase):
         stored = Submission.objects.get(pk=response.data["id"])
         self.assertEqual(stored.verdict, Submission.VERDICT_WRONG)
 
+    def test_sample_check_does_not_store_a_submission(self):
+        response = self.client.post(
+            reverse("sample-run", kwargs={"slug": "add-two"}),
+            {"source_code": SAMPLE_ONLY},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["verdict"], Submission.VERDICT_ACCEPTED)
+        self.assertFalse(response.data["stored"])
+        self.assertIn("Hidden tests were not run", response.data["message"])
+        self.assertEqual(Submission.objects.count(), 0)
+
     def test_hidden_test_rejects_a_sample_only_solution(self):
         response = self.client.post(self.submit_url, {"source_code": SAMPLE_ONLY}, format="json")
 

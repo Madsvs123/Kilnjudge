@@ -298,6 +298,7 @@ textarea {
 }
 
 .editor-panel .primary { width: 100%; margin-top: 0.8rem; }
+.editor-panel .ghost.wide { width: 100%; margin-top: 0.55rem; }
 .hint { color: var(--muted); font-size: 0.85rem; margin: 0.55rem 0 0; }
 
 .result-banner {

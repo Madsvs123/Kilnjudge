@@ -36,10 +36,12 @@ runpy.run_path(solution, run_name="__main__")
 """
 
 
-def run_source(source_code: str, tests, time_limit_ms: int) -> dict:
+def run_source(source_code: str, tests, time_limit_ms: int, *, samples_only: bool = False) -> dict:
     ordered = list(tests)
-        if not ordered:
-            return _outcome("runtime_error", 0, "This problem has no tests, so it cannot be judged.")
+    if not ordered:
+        if samples_only:
+            return _outcome("runtime_error", 0, "This problem has no sample tests to check.")
+        return _outcome("runtime_error", 0, "This problem has no tests, so it cannot be judged.")
 
     workdir = tempfile.mkdtemp(prefix="kilnjudge-")
     try:
@@ -113,6 +115,12 @@ def run_source(source_code: str, tests, time_limit_ms: int) -> dict:
                 )
 
         noun = "test" if len(ordered) == 1 else "tests"
+        if samples_only:
+            return _outcome(
+                "accepted",
+                total_ms,
+                f"Samples matched ({len(ordered)} {noun}). Hidden tests were not run.",
+            )
         return _outcome(
             "accepted",
             total_ms,
