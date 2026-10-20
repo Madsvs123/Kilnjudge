@@ -173,6 +173,37 @@ PROBLEMS = [
             {"position": 7, "is_sample": False, "input_data": "6\n2 9 1 8 0 7\n", "expected_output": "4\n"},
         ],
     },
+    {
+        "slug": "glaze-runs",
+        "title": "Glaze Runs",
+        "position": 6,
+        "difficulty": "intro",
+        "tags": ["strings"],
+        "summary": "Sum the squared lengths of maximal blocks of the same letter.",
+        "time_limit_ms": 1000,
+        "statement": (
+            "A glaze code is one line of lowercase English letters. A run is a maximal "
+            "contiguous block of the same letter. The weight of a run is the square of "
+            "its length. Add the weights of every run.\n\n"
+            "The code aabccc has runs of length 2, 1, and 3. Their weights are 4, 1, and 9, "
+            "so the answer is 14. The code abcd is four runs of length 1, so the answer is 4. "
+            "The code aaa is one run of length 3, so the answer is 9."
+        ),
+        "input_format": (
+            "One line holding the glaze code s.\n"
+            "1 <= length of s <= 1000. Every character is a lowercase English letter."
+        ),
+        "output_format": "Print a single integer, the sum of the squared run lengths.",
+        "tests": [
+            {"position": 1, "is_sample": True, "input_data": "aabccc\n", "expected_output": "14\n"},
+            {"position": 2, "is_sample": True, "input_data": "abcd\n", "expected_output": "4\n"},
+            {"position": 3, "is_sample": True, "input_data": "aaa\n", "expected_output": "9\n"},
+            {"position": 4, "is_sample": False, "input_data": "a\n", "expected_output": "1\n"},
+            {"position": 5, "is_sample": False, "input_data": "book\n", "expected_output": "6\n"},
+            {"position": 6, "is_sample": False, "input_data": "mississippi\n", "expected_output": "17\n"},
+            {"position": 7, "is_sample": False, "input_data": "aaabaaa\n", "expected_output": "19\n"},
+        ],
+    },
 ]
 
 
