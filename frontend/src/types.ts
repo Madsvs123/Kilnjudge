@@ -56,6 +56,15 @@ export type SampleOutcome = {
   stored: boolean;
 };
 
+export type SubmissionCompare = {
+  left: Submission;
+  right: Submission;
+  same_verdict: boolean;
+  same_source: boolean;
+  runtime_delta_ms: number;
+  source_diff: string;
+};
+
 export type Submission = {
   id: number;
   problem_slug: string;

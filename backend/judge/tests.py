@@ -120,6 +120,29 @@ class SolutionVerdictTests(APITestCase):
         self.assertEqual(response.data["verdict"], Submission.VERDICT_TIME_LIMIT)
         self.assertIn("400", response.data["message"])
 
+    def test_compare_reads_only_the_owners_submissions(self):
+        accepted = self.client.post(self.submit_url, {"source_code": CORRECT_ADD}, format="json")
+        rejected = self.client.post(self.submit_url, {"source_code": WRONG_ADD}, format="json")
+        other = User.objects.create_user("compare-other", password="local-pass-123")
+        other_client = APIClient()
+        other_client.force_authenticate(other)
+
+        response = self.client.get(
+            reverse("submission-compare"),
+            {"left": accepted.data["id"], "right": rejected.data["id"]},
+        )
+        stolen = other_client.get(
+            reverse("submission-compare"),
+            {"left": accepted.data["id"], "right": rejected.data["id"]},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["same_verdict"])
+        self.assertFalse(response.data["same_source"])
+        self.assertIn("runtime_delta_ms", response.data)
+        self.assertIn("submission-", response.data["source_diff"])
+        self.assertEqual(stolen.status_code, 404)
+
     def test_network_socket_is_rejected(self):
         source = "import socket\nsocket.socket()\n"
         response = self.client.post(self.submit_url, {"source_code": source}, format="json")

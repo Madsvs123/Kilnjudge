@@ -8,6 +8,7 @@ from .views import (
     ProblemDetailView,
     ProblemListView,
     RegisterView,
+    SubmissionCompareView,
     SubmissionDetailView,
     SubmissionListView,
     SubmitView,
@@ -24,5 +25,6 @@ urlpatterns = [
     path("problems/<slug:slug>/submit/", SubmitView.as_view(), name="submit"),
     path("problems/<slug:slug>/editorial/", EditorialView.as_view(), name="editorial"),
     path("submissions/", SubmissionListView.as_view(), name="submission-list"),
+    path("submissions/compare/", SubmissionCompareView.as_view(), name="submission-compare"),
     path("submissions/<int:pk>/", SubmissionDetailView.as_view(), name="submission-detail"),
 ]

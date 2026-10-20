@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { Layout } from "./components/Layout";
 import { RequireAuth } from "./components/RequireAuth";
+import { ComparePage } from "./pages/ComparePage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProblemListPage } from "./pages/ProblemListPage";
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/" element={<ProblemListPage />} />
           <Route path="/problems/:slug" element={<ProblemPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/compare" element={<ComparePage />} />
           <Route path="/submissions/:id" element={<SubmissionPage />} />
         </Route>
       </Route>

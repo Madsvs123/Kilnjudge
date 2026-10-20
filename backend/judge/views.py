@@ -1,6 +1,8 @@
+import difflib
+
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -109,3 +111,47 @@ class SubmissionDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Submission.objects.filter(owner=self.request.user).select_related("problem")
+
+
+class SubmissionCompareView(APIView):
+    def get(self, request):
+        left_id = _submission_id(request.query_params.get("left"))
+        right_id = _submission_id(request.query_params.get("right"))
+        if left_id is None or right_id is None:
+            return Response(
+                {"detail": "Provide integer left and right submission ids."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        owned = Submission.objects.filter(owner=request.user).select_related("problem")
+        left = get_object_or_404(owned, pk=left_id)
+        right = get_object_or_404(owned, pk=right_id)
+        return Response(
+            {
+                "left": SubmissionSerializer(left).data,
+                "right": SubmissionSerializer(right).data,
+                "same_verdict": left.verdict == right.verdict,
+                "same_source": left.source_code == right.source_code,
+                "runtime_delta_ms": right.runtime_ms - left.runtime_ms,
+                "source_diff": _source_diff(left, right),
+            }
+        )
+
+
+def _submission_id(raw):
+    if raw is None or raw == "":
+        return None
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return None
+
+
+def _source_diff(left: Submission, right: Submission) -> str:
+    diff = difflib.unified_diff(
+        left.source_code.splitlines(),
+        right.source_code.splitlines(),
+        fromfile=f"submission-{left.pk}.py",
+        tofile=f"submission-{right.pk}.py",
+        lineterm="",
+    )
+    return "\n".join(diff)

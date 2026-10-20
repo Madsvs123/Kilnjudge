@@ -338,6 +338,11 @@ table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); }
 th { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
 
+.compare-bar { color: var(--muted); }
+.compare-picks { display: flex; gap: 0.4rem; }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.compare-grid .source-block { margin: 0; }
+
 .source-block { padding: 1rem 1.1rem 1.2rem; margin: 1rem 0; }
 .source-block pre { white-space: pre-wrap; }
 
@@ -383,7 +388,7 @@ th { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.08em; text-trans
 }
 
 @media (max-width: 960px) {
-  .workbench, .io { grid-template-columns: 1fr; }
+  .workbench, .io, .compare-grid { grid-template-columns: 1fr; }
   .editor-panel { position: static; }
   .topbar-inner { flex-wrap: wrap; padding: 0.6rem 0 0.8rem; }
   .session { width: 100%; justify-content: space-between; }

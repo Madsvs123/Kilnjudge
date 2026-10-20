@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
-import { Flame, History, Library, LogOut } from "lucide-react";
+import { Flame, GitCompare, History, Library, LogOut } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
@@ -51,6 +51,13 @@ export function Layout() {
             >
               <History size={16} aria-hidden="true" />
               History
+            </NavLink>
+            <NavLink
+              to="/compare"
+              className={({ isActive }) => clsx("nav-link", isActive && "is-active")}
+            >
+              <GitCompare size={16} aria-hidden="true" />
+              Compare
             </NavLink>
           </nav>
           <div className="session">
