@@ -138,6 +138,41 @@ PROBLEMS = [
             {"position": 7, "is_sample": False, "input_data": "1\n1\n", "expected_output": "1\n"},
         ],
     },
+    {
+        "slug": "shelf-gaps",
+        "title": "Shelf Gaps",
+        "position": 5,
+        "difficulty": "intro",
+        "tags": ["arrays", "counting"],
+        "summary": "Count tiles that stand strictly taller than the tile two places to the right.",
+        "time_limit_ms": 1000,
+        "statement": (
+            "A drying shelf holds tiles in a single row. Each tile has an integer height. "
+            "A shelf gap opens at a tile when that tile is strictly taller than the tile "
+            "two places to its right. The tile immediately to the right is ignored.\n\n"
+            "The last two tiles never open a gap, because nothing sits two places beyond them. "
+            "Equal heights do not open a gap.\n\n"
+            "On the shelf 5 3 4 1 2, the tile 5 is taller than 4, the tile 3 is taller than 1, "
+            "and the tile 4 is taller than 2, so the answer is 3. On the shelf 1 2 3 4 every "
+            "later tile is taller, so the answer is 0. On the shelf 4 1 4 1 the compared pairs "
+            "are equal, so the answer is 0."
+        ),
+        "input_format": (
+            "The first line holds an integer n, the number of tiles.\n"
+            "The second line holds n integers, the heights from left to right.\n"
+            "1 <= n <= 1000. Each height is a 32-bit signed integer."
+        ),
+        "output_format": "Print a single integer, the number of shelf gaps.",
+        "tests": [
+            {"position": 1, "is_sample": True, "input_data": "5\n5 3 4 1 2\n", "expected_output": "3\n"},
+            {"position": 2, "is_sample": True, "input_data": "4\n1 2 3 4\n", "expected_output": "0\n"},
+            {"position": 3, "is_sample": True, "input_data": "4\n4 1 4 1\n", "expected_output": "0\n"},
+            {"position": 4, "is_sample": False, "input_data": "1\n42\n", "expected_output": "0\n"},
+            {"position": 5, "is_sample": False, "input_data": "5\n8 1 7 2 6\n", "expected_output": "2\n"},
+            {"position": 6, "is_sample": False, "input_data": "4\n3 3 3 3\n", "expected_output": "0\n"},
+            {"position": 7, "is_sample": False, "input_data": "6\n2 9 1 8 0 7\n", "expected_output": "4\n"},
+        ],
+    },
 ]
 
 
