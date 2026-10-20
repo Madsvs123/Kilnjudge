@@ -44,7 +44,7 @@ export function SubmissionPage() {
         <p>{VERDICT_DETAIL[record.verdict]}</p>
         <p>{record.message}</p>
         <p className="runtime">
-          {formatRuntime(record.runtime_ms)} · {formatWhen(record.created_at)}
+          Captured runtime: {formatRuntime(record.runtime_ms)} · {formatWhen(record.created_at)}
         </p>
       </div>
       <section className="source-block">

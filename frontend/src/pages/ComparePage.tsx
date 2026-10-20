@@ -45,7 +45,8 @@ export function ComparePage() {
 
 function CompareResult({ comparison }: { comparison: SubmissionCompare }) {
   const delta = comparison.runtime_delta_ms;
-  const deltaLabel = delta === 0 ? "same runtime" : `${delta > 0 ? "+" : ""}${delta} ms on the right run`;
+  const deltaLabel =
+    delta === 0 ? "same captured runtime" : `${delta > 0 ? "+" : ""}${delta} milliseconds on the right run`;
 
   return (
     <>

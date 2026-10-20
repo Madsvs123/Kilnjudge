@@ -19,7 +19,8 @@ export function formatLimit(milliseconds: number): string {
 }
 
 export function formatRuntime(milliseconds: number): string {
-  return `${milliseconds} ms`;
+  const noun = milliseconds === 1 ? "millisecond" : "milliseconds";
+  return `${milliseconds} ${noun}`;
 }
 
 export function formatWhen(iso: string): string {

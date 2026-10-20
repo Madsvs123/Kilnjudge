@@ -45,7 +45,7 @@ export function HistoryPage() {
                 <th>When</th>
                 <th>Problem</th>
                 <th>Verdict</th>
-                <th>Runtime</th>
+                <th>Runtime (milliseconds)</th>
                 <th>Compare</th>
               </tr>
             </thead>

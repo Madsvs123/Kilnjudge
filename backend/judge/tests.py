@@ -52,6 +52,8 @@ class SolutionVerdictTests(APITestCase):
         self.assertEqual(stored.owner, self.owner)
         self.assertEqual(stored.verdict, Submission.VERDICT_ACCEPTED)
         self.assertIn("Passed", stored.message)
+        self.assertIsInstance(response.data["runtime_ms"], int)
+        self.assertGreaterEqual(response.data["runtime_ms"], 0)
 
     def test_wrong_solution_is_rejected(self):
         response = self.client.post(self.submit_url, {"source_code": WRONG_ADD}, format="json")
