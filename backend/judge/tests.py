@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 
-from judge.models import Problem, ProblemTest, Submission
+from judge.models import Problem, ProblemTest, Submission, Tag
 
 User = get_user_model()
 
@@ -191,3 +192,11 @@ class SolutionVerdictTests(APITestCase):
         for problem in seeded:
             self.assertGreaterEqual(problem.tests.filter(is_sample=True).count(), 3)
             self.assertGreaterEqual(problem.tests.filter(is_sample=False).count(), 3)
+
+    def test_load_fixtures_installs_the_owner_shelf_tag(self):
+        call_command("load_fixtures", "owner_shelf")
+
+        tag = Tag.objects.get(slug="owner-shelf")
+        self.assertEqual(tag.label, "Owner shelf")
+        call_command("load_fixtures", "owner_shelf")
+        self.assertEqual(Tag.objects.filter(slug="owner-shelf").count(), 1)

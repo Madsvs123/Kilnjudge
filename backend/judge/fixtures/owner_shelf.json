@@ -1,0 +1,10 @@
+[
+  {
+    "model": "judge.tag",
+    "pk": 9001,
+    "fields": {
+      "slug": "owner-shelf",
+      "label": "Owner shelf"
+    }
+  }
+]
