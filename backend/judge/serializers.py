@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Max
 from rest_framework import serializers
 
+from .catalog import TAG_LABELS
 from .models import Editorial, Hint, Problem, ProblemTest, Submission, Tag
 
 User = get_user_model()
@@ -107,6 +109,66 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     def get_samples(self, problem: Problem):
         samples = problem.tests.filter(is_sample=True)
         return SampleTestSerializer(samples, many=True).data
+
+
+class ProblemTestWriteSerializer(serializers.Serializer):
+    input_data = serializers.CharField(max_length=20_000, allow_blank=True, trim_whitespace=False)
+    expected_output = serializers.CharField(max_length=20_000, allow_blank=True, trim_whitespace=False)
+    is_sample = serializers.BooleanField()
+
+
+class ProblemCreateSerializer(serializers.Serializer):
+    slug = serializers.RegexField(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", max_length=80)
+    title = serializers.CharField(max_length=120)
+    difficulty = serializers.ChoiceField(choices=["intro", "medium", "hard"])
+    summary = serializers.CharField(max_length=240)
+    statement = serializers.CharField(max_length=8000)
+    input_format = serializers.CharField(max_length=2000)
+    output_format = serializers.CharField(max_length=2000)
+    time_limit_ms = serializers.IntegerField(min_value=200, max_value=10_000, default=2000)
+    tags = serializers.ListField(
+        child=serializers.SlugField(max_length=40),
+        required=False,
+        default=list,
+        max_length=8,
+    )
+    tests = ProblemTestWriteSerializer(many=True, min_length=2, max_length=40)
+
+    def validate_slug(self, value: str) -> str:
+        if Problem.objects.filter(slug=value).exists():
+            raise serializers.ValidationError("A problem with this slug already exists.")
+        return value
+
+    def validate_tests(self, tests):
+        if not any(test["is_sample"] for test in tests):
+            raise serializers.ValidationError("Include at least one sample test.")
+        if not any(not test["is_sample"] for test in tests):
+            raise serializers.ValidationError("Include at least one hidden test.")
+        return tests
+
+    def create(self, validated_data):
+        tests = validated_data.pop("tests")
+        tag_slugs = validated_data.pop("tags", [])
+        next_position = (Problem.objects.aggregate(Max("position"))["position__max"] or 0) + 1
+        problem = Problem.objects.create(position=next_position, **validated_data)
+        for position, test in enumerate(tests, start=1):
+            ProblemTest.objects.create(
+                problem=problem,
+                position=position,
+                input_data=test["input_data"],
+                expected_output=test["expected_output"],
+                is_sample=test["is_sample"],
+            )
+        chosen = []
+        for slug in tag_slugs:
+            tag, _created = Tag.objects.get_or_create(
+                slug=slug,
+                defaults={"label": TAG_LABELS.get(slug, slug.replace("-", " ").title())},
+            )
+            chosen.append(tag)
+        if chosen:
+            problem.tags.set(chosen)
+        return problem
 
 
 class EditorialWriteSerializer(serializers.Serializer):

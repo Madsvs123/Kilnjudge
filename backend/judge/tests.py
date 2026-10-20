@@ -152,6 +152,33 @@ class SolutionVerdictTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["verdict"], Submission.VERDICT_RUNTIME)
 
+    def test_owner_can_create_a_problem_without_leaking_hidden_tests(self):
+        payload = {
+            "slug": "owner-draft",
+            "title": "Owner Draft",
+            "difficulty": "intro",
+            "summary": "A problem written in the local judge.",
+            "statement": "Read one integer and print it.",
+            "input_format": "One integer.",
+            "output_format": "The same integer.",
+            "time_limit_ms": 1000,
+            "tags": ["arrays"],
+            "tests": [
+                {"input_data": "4\n", "expected_output": "4\n", "is_sample": True},
+                {"input_data": "hidden-9\n", "expected_output": "hidden-9\n", "is_sample": False},
+            ],
+        }
+
+        response = self.client.post(reverse("problem-list"), payload, format="json")
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["slug"], "owner-draft")
+        self.assertEqual(response.data["time_limit_ms"], 1000)
+        self.assertEqual(len(response.data["samples"]), 1)
+        self.assertEqual(response.data["hidden_count"], 1)
+        self.assertNotContains(response, "hidden-9")
+        self.assertTrue(Problem.objects.filter(slug="owner-draft").exists())
+
     def test_catalog_seeds_four_original_problems(self):
         expected = {
             "interior-valleys",

@@ -10,6 +10,7 @@ from .models import Editorial, Problem, Submission
 from .runner import run_source
 from .serializers import (
     EditorialWriteSerializer,
+    ProblemCreateSerializer,
     ProblemDetailSerializer,
     ProblemListSerializer,
     RegisterSerializer,
@@ -35,11 +36,21 @@ def _annotated_problems():
     )
 
 
-class ProblemListView(generics.ListAPIView):
-    serializer_class = ProblemListSerializer
+class ProblemListView(generics.ListCreateAPIView):
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return ProblemCreateSerializer
+        return ProblemListSerializer
 
     def get_queryset(self):
         return _annotated_problems()
+
+    def create(self, request, *args, **kwargs):
+        incoming = self.get_serializer(data=request.data)
+        incoming.is_valid(raise_exception=True)
+        problem = incoming.save()
+        annotated = _annotated_problems().get(pk=problem.pk)
+        return Response(ProblemDetailSerializer(annotated).data, status=status.HTTP_201_CREATED)
 
 
 class ProblemDetailView(generics.RetrieveAPIView):
