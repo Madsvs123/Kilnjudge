@@ -182,7 +182,7 @@ class SolutionVerdictTests(APITestCase):
         self.assertEqual(response.data["time_limit_ms"], 1000)
         self.assertEqual(len(response.data["samples"]), 1)
         self.assertEqual(response.data["hidden_count"], 1)
-        self.assertNotContains(response, "hidden-9")
+        self.assertNotContains(response, "hidden-9", status_code=201)
         self.assertTrue(Problem.objects.filter(slug="owner-draft").exists())
 
     def test_catalog_seeds_four_original_problems(self):
