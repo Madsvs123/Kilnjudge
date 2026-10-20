@@ -6,7 +6,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Editorial, Problem, Submission
+from .models import Editorial, Problem, Submission, Tag
 from .runner import run_source
 from .serializers import (
     EditorialWriteSerializer,
@@ -14,6 +14,7 @@ from .serializers import (
     ProblemDetailSerializer,
     ProblemListSerializer,
     RegisterSerializer,
+    TagSerializer,
     SubmissionSerializer,
     SubmitSerializer,
 )
@@ -43,7 +44,11 @@ class ProblemListView(generics.ListCreateAPIView):
         return ProblemListSerializer
 
     def get_queryset(self):
-        return _annotated_problems()
+        queryset = _annotated_problems()
+        tag = (self.request.query_params.get("tag") or "").strip()
+        if tag:
+            queryset = queryset.filter(tags__slug=tag).distinct()
+        return queryset
 
     def create(self, request, *args, **kwargs):
         incoming = self.get_serializer(data=request.data)
@@ -51,6 +56,11 @@ class ProblemListView(generics.ListCreateAPIView):
         problem = incoming.save()
         annotated = _annotated_problems().get(pk=problem.pk)
         return Response(ProblemDetailSerializer(annotated).data, status=status.HTTP_201_CREATED)
+
+
+class TagListView(generics.ListAPIView):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
 
 
 class ProblemDetailView(generics.RetrieveAPIView):
