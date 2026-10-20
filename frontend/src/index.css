@@ -243,6 +243,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .statement h2 { margin: 1.4rem 0 0.4rem; font-size: 1.35rem; }
 .statement h3 { margin: 0 0 0.5rem; font-size: 1rem; }
 
+.hint-list { margin: 0.4rem 0 0; padding-left: 1.2rem; color: var(--clay-dim); }
+.hint-list li { margin: 0.35rem 0; }
+
 .sample {
   margin-top: 0.8rem;
   padding-top: 0.8rem;

@@ -22,6 +22,11 @@ export type Sample = {
   expected_output: string;
 };
 
+export type Hint = {
+  position: number;
+  body: string;
+};
+
 export type ProblemDetail = {
   slug: string;
   title: string;
@@ -34,6 +39,7 @@ export type ProblemDetail = {
   output_format: string;
   time_limit_ms: number;
   hidden_count: number;
+  hints: Hint[];
   samples: Sample[];
 };
 

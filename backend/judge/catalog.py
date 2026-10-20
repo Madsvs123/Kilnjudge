@@ -28,6 +28,10 @@ PROBLEMS = [
             "1 <= n <= 1000. Each reading is a 32-bit signed integer."
         ),
         "output_format": "Print a single integer, the number of interior valleys.",
+        "hints": [
+            "Skip the first reading and the last reading. A valley needs a neighbor on both sides.",
+            "If either neighbor is less than or equal to the reading, that reading is not a valley.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "5\n3 1 4 2 5\n", "expected_output": "2\n"},
             {"position": 2, "is_sample": True, "input_data": "3\n1 2 3\n", "expected_output": "0\n"},
@@ -59,6 +63,10 @@ PROBLEMS = [
             "0 <= n <= 1000000000."
         ),
         "output_format": "Print a single integer, the number of replacements.",
+        "hints": [
+            "Stop when the current value has one digit. Reaching that digit is not an extra step.",
+            "Each replacement looks only at the decimal digits of the current value.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "5\n", "expected_output": "0\n"},
             {"position": 2, "is_sample": True, "input_data": "25\n", "expected_output": "7\n"},
@@ -93,6 +101,10 @@ PROBLEMS = [
             "1 <= length of s <= 1000. Every character is a lowercase English letter."
         ),
         "output_format": "Print a single integer, the number of even-gap twins.",
+        "hints": [
+            "A positive even distance means the two indexes are different and have the same parity.",
+            "Count each letter on even indexes separately from the same letter on odd indexes.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "aba\n", "expected_output": "1\n"},
             {"position": 2, "is_sample": True, "input_data": "aaaa\n", "expected_output": "2\n"},
@@ -128,6 +140,10 @@ PROBLEMS = [
             "1 <= n <= 1000. Each value is a 32-bit signed integer."
         ),
         "output_format": "Print a single integer, the largest rising-run cover.",
+        "hints": [
+            "Collapse adjacent equal values into one block before you look for an increase.",
+            "The answer counts original elements. A long flat block can outweigh several short rises.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "8\n1 1 2 2 2 1 3 3\n", "expected_output": "5\n"},
             {"position": 2, "is_sample": True, "input_data": "4\n5 4 3 2\n", "expected_output": "1\n"},
@@ -163,6 +179,10 @@ PROBLEMS = [
             "1 <= n <= 1000. Each height is a 32-bit signed integer."
         ),
         "output_format": "Print a single integer, the number of shelf gaps.",
+        "hints": [
+            "Compare a tile with the tile two places to its right, not with its immediate neighbor.",
+            "The last two tiles have nothing two places further along, so they do not open a gap.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "5\n5 3 4 1 2\n", "expected_output": "3\n"},
             {"position": 2, "is_sample": True, "input_data": "4\n1 2 3 4\n", "expected_output": "0\n"},
@@ -194,6 +214,10 @@ PROBLEMS = [
             "1 <= length of s <= 1000. Every character is a lowercase English letter."
         ),
         "output_format": "Print a single integer, the sum of the squared run lengths.",
+        "hints": [
+            "Close a run when the letter changes, and close the final run at the end of the string.",
+            "Square each run length on its own, then add those squares.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "aabccc\n", "expected_output": "14\n"},
             {"position": 2, "is_sample": True, "input_data": "abcd\n", "expected_output": "4\n"},
@@ -227,6 +251,10 @@ PROBLEMS = [
             "1 <= n <= 1000. Each temperature is an integer from 0 through 10000."
         ),
         "output_format": "Print a single integer, the number of pairs.",
+        "hints": [
+            "A pair uses two different positions. Swapping those positions does not make a new pair.",
+            "You only need to know whether a sum is a multiple of 3.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "4\n1 2 3 4\n", "expected_output": "2\n"},
             {"position": 2, "is_sample": True, "input_data": "1\n3\n", "expected_output": "0\n"},
@@ -260,6 +288,10 @@ PROBLEMS = [
             "1 <= length of s <= 200. Every character is a or b."
         ),
         "output_format": "Print a single integer, the number of balanced windows.",
+        "hints": [
+            "A window of odd length cannot hold the same count of each letter.",
+            "Count every contiguous block, including blocks that sit strictly inside the stamp.",
+        ],
         "tests": [
             {"position": 1, "is_sample": True, "input_data": "ab\n", "expected_output": "1\n"},
             {"position": 2, "is_sample": True, "input_data": "aabb\n", "expected_output": "2\n"},

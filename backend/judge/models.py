@@ -60,6 +60,24 @@ class ProblemTest(models.Model):
         return f"{self.problem.slug} {kind} {self.position}"
 
 
+class Hint(models.Model):
+    problem = models.ForeignKey(Problem, related_name="hints", on_delete=models.CASCADE)
+    position = models.PositiveIntegerField()
+    body = models.TextField()
+
+    class Meta:
+        ordering = ["position"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["problem", "position"],
+                name="unique_problem_hint_position",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.problem.slug} hint {self.position}"
+
+
 class Submission(models.Model):
     VERDICT_ACCEPTED = "accepted"
     VERDICT_WRONG = "wrong_answer"

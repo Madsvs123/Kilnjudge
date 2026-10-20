@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from .models import Problem, ProblemTest, Submission, Tag
+from .models import Hint, Problem, ProblemTest, Submission, Tag
 
 User = get_user_model()
 
@@ -44,6 +44,12 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ("slug", "label")
 
 
+class HintSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hint
+        fields = ("position", "body")
+
+
 class ProblemListSerializer(serializers.ModelSerializer):
     sample_count = serializers.IntegerField(read_only=True)
     hidden_count = serializers.IntegerField(read_only=True)
@@ -68,6 +74,7 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     samples = serializers.SerializerMethodField()
     hidden_count = serializers.IntegerField(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
+    hints = HintSerializer(many=True, read_only=True)
 
     class Meta:
         model = Problem
@@ -83,6 +90,7 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
             "output_format",
             "time_limit_ms",
             "hidden_count",
+            "hints",
             "samples",
         )
 

@@ -128,6 +128,17 @@ export function ProblemPage() {
             <h2>Output</h2>
             <Paragraphs text={detail.output_format} />
           </section>
+          {detail.hints.length > 0 ? (
+            <section>
+              <h2>Hints</h2>
+              <ul className="hint-list">
+                {detail.hints.map((hint) => (
+                  <li key={hint.position}>{hint.body}</li>
+                ))}
+              </ul>
+              <p className="hint">Hints describe where to look. They do not state the answer.</p>
+            </section>
+          ) : null}
           <section>
             <h2>Samples</h2>
             {detail.samples.map((sample, index) => (
