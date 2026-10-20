@@ -49,6 +49,15 @@ export function ProblemListPage() {
               </span>
               <h2>{problem.title}</h2>
               <p>{problem.summary}</p>
+              {problem.tags.length > 0 ? (
+                <span className="tag-row">
+                  {problem.tags.map((tag) => (
+                    <span key={tag.slug} className="tag">
+                      {tag.label}
+                    </span>
+                  ))}
+                </span>
+              ) : null}
             </span>
           </Link>
         ))}

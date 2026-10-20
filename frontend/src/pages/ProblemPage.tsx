@@ -105,6 +105,11 @@ export function ProblemPage() {
             <span className={`difficulty difficulty-${detail.difficulty}`}>
               {difficultyLabel(detail.difficulty)}
             </span>
+            {detail.tags.map((tag) => (
+              <span key={tag.slug} className="tag">
+                {tag.label}
+              </span>
+            ))}
             <span>
               <Clock3 size={14} aria-hidden="true" />
               {formatLimit(detail.time_limit_ms)}

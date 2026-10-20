@@ -26,7 +26,7 @@ class MeView(APIView):
 
 
 def _annotated_problems():
-    return Problem.objects.annotate(
+    return Problem.objects.prefetch_related("tags").annotate(
         sample_count=Count("tests", filter=Q(tests__is_sample=True)),
         hidden_count=Count("tests", filter=Q(tests__is_sample=False)),
     )

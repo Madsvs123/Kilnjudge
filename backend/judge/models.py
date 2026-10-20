@@ -6,6 +6,7 @@ class Problem(models.Model):
     DIFFICULTY_CHOICES = (
         ("intro", "Intro"),
         ("medium", "Medium"),
+        ("hard", "Hard"),
     )
 
     slug = models.SlugField(max_length=80, unique=True)
@@ -17,6 +18,7 @@ class Problem(models.Model):
     input_format = models.TextField()
     output_format = models.TextField()
     time_limit_ms = models.PositiveIntegerField(default=2000)
+    tags = models.ManyToManyField("Tag", related_name="problems", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -24,6 +26,17 @@ class Problem(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class Tag(models.Model):
+    slug = models.SlugField(max_length=40, unique=True)
+    label = models.CharField(max_length=40)
+
+    class Meta:
+        ordering = ["label", "slug"]
+
+    def __str__(self) -> str:
+        return self.label
 
 
 class ProblemTest(models.Model):

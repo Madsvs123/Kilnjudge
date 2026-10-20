@@ -1,10 +1,16 @@
 export type Verdict = "accepted" | "wrong_answer" | "time_limit" | "runtime_error";
 
+export type Tag = {
+  slug: string;
+  label: string;
+};
+
 export type ProblemSummary = {
   slug: string;
   title: string;
   position: number;
   difficulty: string;
+  tags: Tag[];
   summary: string;
   time_limit_ms: number;
   sample_count: number;
@@ -21,6 +27,7 @@ export type ProblemDetail = {
   title: string;
   position: number;
   difficulty: string;
+  tags: Tag[];
   summary: string;
   statement: string;
   input_format: string;

@@ -1,14 +1,21 @@
 from django.contrib import admin
 
-from .models import Problem, ProblemTest, Submission
+from .models import Problem, ProblemTest, Submission, Tag
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("label", "slug")
+    search_fields = ("label", "slug")
 
 
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):
     list_display = ("position", "title", "slug", "difficulty", "time_limit_ms")
-    list_filter = ("difficulty",)
+    list_filter = ("difficulty", "tags")
     search_fields = ("title", "slug")
     prepopulated_fields = {"slug": ("title",)}
+    filter_horizontal = ("tags",)
     ordering = ("position",)
 
 

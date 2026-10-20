@@ -9,6 +9,7 @@ PROBLEMS = [
         "title": "Interior Valleys",
         "position": 1,
         "difficulty": "intro",
+        "tags": ["arrays", "counting"],
         "summary": "Count readings that are strictly colder than both neighbors.",
         "time_limit_ms": 2000,
         "statement": (
@@ -42,6 +43,7 @@ PROBLEMS = [
         "title": "Square Digit Steps",
         "position": 2,
         "difficulty": "intro",
+        "tags": ["math", "digits"],
         "summary": "Count replacements by the sum of squared decimal digits until one digit remains.",
         "time_limit_ms": 2000,
         "statement": (
@@ -72,6 +74,7 @@ PROBLEMS = [
         "title": "Even-Gap Twins",
         "position": 3,
         "difficulty": "medium",
+        "tags": ["strings", "counting"],
         "summary": "Count matching letters whose indexes are a positive even distance apart.",
         "time_limit_ms": 2000,
         "statement": (
@@ -105,6 +108,7 @@ PROBLEMS = [
         "title": "Rising Plateau Cover",
         "position": 4,
         "difficulty": "medium",
+        "tags": ["arrays", "ranges"],
         "summary": "Find the longest stretch of strictly rising equal-value blocks.",
         "time_limit_ms": 2000,
         "statement": (
@@ -137,7 +141,17 @@ PROBLEMS = [
 ]
 
 
-def load_catalog(problem_model, test_model) -> None:
+TAG_LABELS = {
+    "arrays": "Arrays",
+    "counting": "Counting",
+    "digits": "Digits",
+    "math": "Math",
+    "ranges": "Ranges",
+    "strings": "Strings",
+}
+
+
+def load_catalog(problem_model, test_model, tag_model=None, hint_model=None, editorial_model=None) -> None:
     field_names = (
         "title",
         "position",
@@ -148,12 +162,16 @@ def load_catalog(problem_model, test_model) -> None:
         "output_format",
         "time_limit_ms",
     )
+    concrete = {field.name for field in problem_model._meta.fields}
     for entry in PROBLEMS:
-        defaults = {name: entry[name] for name in field_names}
+        defaults = {name: entry[name] for name in field_names if name in concrete}
         problem, _created = problem_model.objects.update_or_create(
             slug=entry["slug"],
             defaults=defaults,
         )
+        _assign_tags(problem, entry, tag_model)
+        _assign_hints(problem, entry, hint_model)
+        _assign_editorial(problem, entry, editorial_model)
         positions = [test["position"] for test in entry["tests"]]
         test_model.objects.filter(problem=problem).exclude(position__in=positions).delete()
         for test in entry["tests"]:
@@ -166,3 +184,38 @@ def load_catalog(problem_model, test_model) -> None:
                     "is_sample": test["is_sample"],
                 },
             )
+
+
+def _assign_tags(problem, entry, tag_model) -> None:
+    if tag_model is None or not hasattr(problem, "tags"):
+        return
+    chosen = []
+    for slug in entry.get("tags", []):
+        tag, _created = tag_model.objects.update_or_create(
+            slug=slug,
+            defaults={"label": TAG_LABELS.get(slug, slug.replace("-", " ").title())},
+        )
+        chosen.append(tag)
+    problem.tags.set(chosen)
+
+
+def _assign_hints(problem, entry, hint_model) -> None:
+    if hint_model is None:
+        return
+    bodies = list(entry.get("hints", []))
+    hint_model.objects.filter(problem=problem).exclude(position__in=range(1, len(bodies) + 1)).delete()
+    for position, body in enumerate(bodies, start=1):
+        hint_model.objects.update_or_create(
+            problem=problem,
+            position=position,
+            defaults={"body": body},
+        )
+
+
+def _assign_editorial(problem, entry, editorial_model) -> None:
+    if editorial_model is None or "editorial" not in entry:
+        return
+    editorial_model.objects.update_or_create(
+        problem=problem,
+        defaults={"notes": entry["editorial"]},
+    )
