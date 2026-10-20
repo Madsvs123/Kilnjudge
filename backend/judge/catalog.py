@@ -204,6 +204,39 @@ PROBLEMS = [
             {"position": 7, "is_sample": False, "input_data": "aaabaaa\n", "expected_output": "19\n"},
         ],
     },
+    {
+        "slug": "pair-kiln-totals",
+        "title": "Pair Kiln Totals",
+        "position": 7,
+        "difficulty": "medium",
+        "tags": ["math", "arrays"],
+        "summary": "Count unordered pairs of temperatures whose sum is divisible by three.",
+        "time_limit_ms": 1500,
+        "statement": (
+            "A firing log lists integer temperatures. Count the unordered pairs of distinct "
+            "positions whose temperatures add up to a multiple of 3. A temperature is never "
+            "paired with itself, and the pair (left, right) is the same pair as (right, left).\n\n"
+            "On the log 1 2 3 4 the pairs are 1+2 and 2+4. Both sums are multiples of 3, and "
+            "the other four pairs are not, so the answer is 2. A single temperature has no "
+            "pair, so the answer is 0. Three equal temperatures that are 1 mod 3, such as "
+            "1 1 1, never sum to a multiple of 3, so the answer is 0."
+        ),
+        "input_format": (
+            "The first line holds an integer n, the number of temperatures.\n"
+            "The second line holds n integers.\n"
+            "1 <= n <= 1000. Each temperature is an integer from 0 through 10000."
+        ),
+        "output_format": "Print a single integer, the number of pairs.",
+        "tests": [
+            {"position": 1, "is_sample": True, "input_data": "4\n1 2 3 4\n", "expected_output": "2\n"},
+            {"position": 2, "is_sample": True, "input_data": "1\n3\n", "expected_output": "0\n"},
+            {"position": 3, "is_sample": True, "input_data": "3\n1 1 1\n", "expected_output": "0\n"},
+            {"position": 4, "is_sample": False, "input_data": "3\n3 6 9\n", "expected_output": "3\n"},
+            {"position": 5, "is_sample": False, "input_data": "5\n1 2 2 4 5\n", "expected_output": "6\n"},
+            {"position": 6, "is_sample": False, "input_data": "3\n0 0 0\n", "expected_output": "3\n"},
+            {"position": 7, "is_sample": False, "input_data": "2\n4 5\n", "expected_output": "1\n"},
+        ],
+    },
 ]
 
 
