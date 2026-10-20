@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { api, formatApiError } from "../api";
 import { VerdictBadge } from "../components/VerdictBadge";
-import { formatRuntime, formatWhen } from "../format";
+import { formatRuntime, formatWhen, VERDICT_DETAIL } from "../format";
 import type { Submission } from "../types";
 import { usePageTitle } from "../usePageTitle";
 
@@ -41,6 +41,7 @@ export function SubmissionPage() {
       </h1>
       <div className={`result-banner verdict-${record.verdict}`}>
         <VerdictBadge verdict={record.verdict} />
+        <p>{VERDICT_DETAIL[record.verdict]}</p>
         <p>{record.message}</p>
         <p className="runtime">
           {formatRuntime(record.runtime_ms)} · {formatWhen(record.created_at)}

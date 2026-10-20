@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { api, formatApiError } from "../api";
 import { VerdictBadge } from "../components/VerdictBadge";
-import { difficultyLabel, formatLimit, formatRuntime, formatWhen } from "../format";
+import { difficultyLabel, formatLimit, formatRuntime, formatWhen, VERDICT_DETAIL } from "../format";
 import type { ProblemDetail, Submission } from "../types";
 import { usePageTitle } from "../usePageTitle";
 
@@ -229,6 +229,7 @@ export function ProblemPage() {
           {result ? (
             <div className={`result-banner verdict-${result.verdict}`}>
               <VerdictBadge verdict={result.verdict} />
+              <p>{VERDICT_DETAIL[result.verdict]}</p>
               <p>{result.message}</p>
               <p className="runtime">{formatRuntime(result.runtime_ms)}</p>
               <Link to={`/submissions/${result.id}`}>Open this run</Link>

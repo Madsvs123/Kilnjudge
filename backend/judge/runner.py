@@ -38,8 +38,8 @@ runpy.run_path(solution, run_name="__main__")
 
 def run_source(source_code: str, tests, time_limit_ms: int) -> dict:
     ordered = list(tests)
-    if not ordered:
-        return _outcome("runtime_error", 0, "This problem has no tests.")
+        if not ordered:
+            return _outcome("runtime_error", 0, "This problem has no tests, so it cannot be judged.")
 
     workdir = tempfile.mkdtemp(prefix="kilnjudge-")
     try:
@@ -85,24 +85,39 @@ def run_source(source_code: str, tests, time_limit_ms: int) -> dict:
                 return _outcome(
                     "time_limit",
                     total_ms,
-                    f"Time limit of {int(time_limit_ms)} ms for this problem was exceeded on {label}.",
+                    (
+                        f"Time limit of {int(time_limit_ms)} ms for this problem was exceeded on {label}. "
+                        "The run was stopped, and later tests were not started."
+                    ),
                 )
             except OSError:
                 return _outcome(
                     "runtime_error",
                     total_ms,
-                    "The interpreter could not be started.",
+                    "Runtime error. The Python interpreter could not be started for this problem.",
                 )
 
             total_ms += int((time.perf_counter() - started) * 1000)
             if completed.returncode != 0:
                 hint = _stderr_hint(completed.stderr) if test.is_sample else ""
-                return _outcome("runtime_error", total_ms, f"Runtime error on {label}.{hint}")
+                return _outcome(
+                    "runtime_error",
+                    total_ms,
+                    f"Runtime error on {label}. The solution stopped before printing an answer.{hint}",
+                )
             if _normalize(completed.stdout) != _normalize(test.expected_output):
-                return _outcome("wrong_answer", total_ms, f"Wrong answer on {label}.")
+                return _outcome(
+                    "wrong_answer",
+                    total_ms,
+                    f"Wrong answer on {label}. The printed output did not match, and later tests were not run.",
+                )
 
         noun = "test" if len(ordered) == 1 else "tests"
-        return _outcome("accepted", total_ms, f"Passed all {len(ordered)} {noun}.")
+        return _outcome(
+            "accepted",
+            total_ms,
+            f"Accepted. Passed all {len(ordered)} {noun}, including every hidden test stored for this problem.",
+        )
     finally:
         shutil.rmtree(workdir, ignore_errors=True)
 
