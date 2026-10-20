@@ -10,6 +10,11 @@ User = get_user_model()
 CORRECT_ADD = "a, b = map(int, input().split())\nprint(a + b)\n"
 WRONG_ADD = "print(0)\n"
 SAMPLE_ONLY = "a, b = map(int, input().split())\nprint(a + b if a > 0 else 9)\n"
+SHELF_GAPS = (
+    "count = int(input())\n"
+    "heights = list(map(int, input().split()))\n"
+    "print(sum(1 for index in range(count - 2) if heights[index] > heights[index + 2]))\n"
+)
 
 
 class SolutionVerdictTests(APITestCase):
@@ -192,6 +197,39 @@ class SolutionVerdictTests(APITestCase):
         for problem in seeded:
             self.assertGreaterEqual(problem.tests.filter(is_sample=True).count(), 3)
             self.assertGreaterEqual(problem.tests.filter(is_sample=False).count(), 3)
+
+    def test_shelf_gaps_accepts_a_correct_solution(self):
+        problem = Problem.objects.get(slug="shelf-gaps")
+        self.assertEqual(problem.difficulty, "intro")
+        self.assertEqual(problem.time_limit_ms, 1000)
+        self.assertGreaterEqual(problem.tests.filter(is_sample=True).count(), 3)
+        self.assertGreaterEqual(problem.tests.filter(is_sample=False).count(), 3)
+        self.assertGreaterEqual(problem.hints.count(), 2)
+
+        response = self.client.post(
+            reverse("submit", kwargs={"slug": "shelf-gaps"}),
+            {"source_code": SHELF_GAPS},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["verdict"], Submission.VERDICT_ACCEPTED)
+        self.assertIsInstance(response.data["runtime_ms"], int)
+
+    def test_problem_list_filters_by_tag(self):
+        digits = self.client.get(reverse("problem-list"), {"tag": "digits"})
+        arrays = self.client.get(reverse("problem-list"), {"tag": "arrays"})
+        missing = self.client.get(reverse("problem-list"), {"tag": "not-a-topic"})
+        tags = self.client.get(reverse("tag-list"))
+
+        self.assertEqual(digits.status_code, 200)
+        self.assertEqual({row["slug"] for row in digits.data}, {"square-digit-steps"})
+        array_slugs = {row["slug"] for row in arrays.data}
+        self.assertIn("shelf-gaps", array_slugs)
+        self.assertIn("interior-valleys", array_slugs)
+        self.assertNotIn("glaze-runs", array_slugs)
+        self.assertEqual(missing.data, [])
+        self.assertIn("digits", {row["slug"] for row in tags.data})
 
     def test_load_fixtures_installs_the_owner_shelf_tag(self):
         call_command("load_fixtures", "owner_shelf")
